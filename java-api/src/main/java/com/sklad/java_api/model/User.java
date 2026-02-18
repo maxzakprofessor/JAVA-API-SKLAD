@@ -5,26 +5,38 @@ import lombok.Data;
 
 /**
  * Модель Пользователя (Entity)
- * Отвечает за структуру таблицы 'users' в PostgreSQL.
- * Соблюдаем принцип S (Single Responsibility): этот класс только описывает данные.
+ * Соответствует таблице 'users' в PostgreSQL.
+ * Реализовано согласно стандартам безопасности корпоративных систем.
  */
 @Entity
 @Data
-@Table(name = "users") // Имя таблицы в БД
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Уникальный логин, не может быть пустым
+    // Уникальный логин (например, i.ivanov)
     @Column(unique = true, nullable = false)
     private String username;
 
-    // Хэшированный пароль (мы никогда не храним пароли в открытом виде!)
+    // Хэшированный пароль (BCrypt). В базе никогда не хранится открытый текст.
     @Column(nullable = false)
     private String password;
 
-    // Роль пользователя (например, USER или ADMIN)
-    private String role = "USER";
+    // Роль пользователя: ROLE_USER или ROLE_ADMIN
+    private String role = "ROLE_USER";
+
+    /**
+     * Флаг обязательной смены пароля. 
+     * В госучреждениях администратор выдает временный пароль, 
+     * который пользователь обязан сменить при первом входе.
+     */
+    @Column(name = "needs_password_change")
+    private boolean needsPasswordChange = true;
+
+    // Поле для хранения ФИО или полного названия должности (опционально)
+    @Column(length = 500)
+    private String fullName;
 }
