@@ -101,4 +101,12 @@ public class AuthController {
         }
         return ResponseEntity.status(404).body("Пользователь не найден");
     }
+
+    @GetMapping("/admin/all-users")
+    public ResponseEntity<?> getAllUsers() {
+        // Возвращаем список всех пользователей, Spring автоматически уберет пароли, 
+        // если мы не запрашиваем их или используем проекцию.
+        return ResponseEntity.ok(userRepository.findAll());
+    }
+
 }
