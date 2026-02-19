@@ -2,10 +2,14 @@ package com.sklad.java_api.controller;
 
 import com.sklad.java_api.model.GoodRest;
 import com.sklad.java_api.service.GoodRestService; // Импортируем наш сервис с логикой
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/goodrests")
@@ -29,4 +33,17 @@ public class GoodRestController {
         
         // 2. Результат возвращается во Vue как response.data
     }
+
+    @GetMapping("/export/pdf/{nameStock}/{nameGood}")
+public void exportToPDF(@PathVariable String nameStock, @PathVariable String nameGood, HttpServletResponse response) throws IOException {
+    // Устанавливаем тип контента и имя файла
+    response.setContentType("application/pdf");
+    String headerKey = "Content-Disposition";
+    String headerValue = "attachment; filename=report_" + nameStock + ".pdf";
+    response.setHeader(headerKey, headerValue);
+
+    // Вызываем генерацию
+    restService.exportToPdf(nameStock, nameGood, response);
+}
+
 }

@@ -1,7 +1,20 @@
 package com.sklad.java_api.service;
-
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Font;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.FontFactory;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import com.sklad.java_api.model.*;
 import com.sklad.java_api.repository.*;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,4 +90,49 @@ public class GoodRestService {
         restRepo.deleteAll(); 
         return restRepo.saveAll(results);
     }
+
+    public void exportToPdf(String stock, String good, HttpServletResponse response) throws IOException {
+    // 1. Получаем данные для отчета (наш готовый расчет)
+    List<GoodRest> data = calculateAndSaveRests(stock, good);
+
+    // 2. Настраиваем документ A4
+    Document document = new Document(PageSize.A4);
+    PdfWriter.getInstance(document, response.getOutputStream());
+
+    document.open();
+
+    // --- ЛОГИКА ДЛЯ РУССКОГО ЯЗЫКА ---
+    // Указываем путь к системному шрифту Windows для поддержки кириллицы
+    String fontPath = "C:/Windows/Fonts/arial.ttf"; 
+    BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+    Font fontTitle = new Font(bf, 18, Font.BOLD);
+    Font fontTable = new Font(bf, 12, Font.NORMAL);
+    // ---------------------------------
+
+    // Заголовок
+    Paragraph p = new Paragraph("Отчет по остаткам ТМЦ", fontTitle);
+    p.setAlignment(Paragraph.ALIGN_CENTER);
+    document.add(p);
+
+    // Таблица (3 колонки)
+    PdfPTable table = new PdfPTable(3);
+    table.setWidthPercentage(100f);
+    table.setSpacingBefore(15);
+
+    // Шапка таблицы
+    table.addCell(new Phrase("Склад", fontTable));
+    table.addCell(new Phrase("Товар", fontTable));
+    table.addCell(new Phrase("Кол-во", fontTable));
+
+    // Данные
+    for (GoodRest rest : data) {
+        table.addCell(new Phrase(rest.getNameStock(), fontTable));
+        table.addCell(new Phrase(rest.getNameGood(), fontTable));
+        table.addCell(new Phrase(String.valueOf(rest.getQty()), fontTable));
+    }
+
+    document.add(table);
+    document.close();
+}
+
 }
