@@ -1,64 +1,89 @@
-📦 Warehouse Management System (Enterprise Grade)
-Современная Fullstack-система складского учета, мигрированная с платформы .NET на стек Java 25 (LTS) и Vue 3. Проект реализован с соблюдением корпоративных стандартов безопасности, принципов SOLID и поддержкой интеллектуального анализа данных.
+📦 Warehouse Management System (Enterprise AI Ecosystem)
+Универсальная Fullstack-экосистема складского учета и интеллектуальной аналитики.
+Проект демонстрирует эволюцию корпоративной архитектуры через три этапа миграции: от гибкого прототипа на Python, к корпоративному стандарту на Java 25 и высокопроизводительному API на .NET 10.
 
-🛠 Технологический стек
-Backend: Java 25, Spring Boot 3.5, Spring Data JPA.
-Reporting: Серверная генерация PDF-отчетов (OpenPDF) с поддержкой кириллицы.
-AI: Интеграция с Gemini 2.0 Flash для анализа складских запасов.
-Security: Spring Security + JWT (JSON Web Token), BCrypt хэширование паролей.
-Database: PostgreSQL (Hibernate ORM с автоматической миграцией схем).
-Frontend: Vue 3 (Composition API), Axios Interceptors, Bootstrap 5, Vue Router.
+🚀 Архитектурная концепция: Multi-Stack Evolution
+Система спроектирована по принципу API Contract Persistence: фронтенд на Vue 3 остается неизменным, в то время как бэкенд-движок может быть бесшовно заменен без потери данных или функционала.
 
-🌟 Ключевые архитектурные решения (SOLID)
-S (Single Responsibility): Бизнес-логика вынесена в сервисный слой (GoodRestService). Контроллеры отвечают только за REST-эндпоинты.
-O (Open/Closed): Система отчетов расширяема без изменения базового кода расчета остатков.
-D (Dependency Inversion): Активное использование Spring IoC/DI для слабой связанности компонентов.
-Server-Side Reporting (Security & Integrity): Генерация PDF вынесена на сторону сервера. Это гарантирует:
-Целостность данных: Отчет нельзя подделать на стороне клиента.
-Единый источник истины (SSoT): И веб-интерфейс, и печатная форма используют одни и те же серверные методы расчета.
+🛠 Технологические стеки (Backend)
+.NET 10 (LTS): ASP.NET Core, EF Core, Microsoft Identity, QuestPDF, LINQ.
+Java 25 (LTS): Spring Boot 3.5, Spring Security, Hibernate (JPA), Streams API.
+Python 3.10: Django REST Framework (DRF), Django ORM, SimpleJWT, ReportLab.
 
-🔐 Безопасность и управление персоналом
-Реализован модуль управления пользователями, адаптированный под регламенты госучреждений:
-Централизованная регистрация: Администратор (ROLE_ADMIN) создает учетные записи сотрудников.
-Генерация паролей: Бэкенд генерирует криптостойкие временные пароли через UUID.
-Первый вход: Механизм needsPasswordChange — принудительная смена временного пароля пользователем при первом входе.
-Stateless Auth: Полная защита API через JWT Filter. Доступ к данным закрыт для неавторизованных запросов.
+✨ Frontend & AI-Driven Development
+Frontend: Vue 3 (Composition API), Vite, Pinia, Axios Interceptors, Chart.js.
+AI & Prompt Engineering: Использование Gemini 2.0 Flash и GitHub Copilot для генерации бизнес-логики и архитектурного рефакторинга.
+Data Science: Применение ChatGPT Advanced Data Analysis для верификации математических моделей расчета ТМЦ.
+
+🌟 Глубокая техническая экспертиза
+1. Решение проблемы N+1 (Оптимизация БД)
+Реализованы стратегии минимизации SQL-запросов во всех ORM:
+.NET: Использование .Include() (Eager Loading) и .AsNoTracking() для высокоскоростного чтения.
+Django: Применение select_related (для Foreign Keys) и prefetch_related.
+Hibernate: Использование JOIN FETCH и стратегии FetchType.LAZY.
+
+2. Stateless Auth & JWT (Безопасность)
+JWT: Выбрана Stateless-архитектура, позволяющая масштабировать API горизонтально в Docker-контейнерах без привязки к сессиям сервера.
+Security Flow: Реализована ролевая модель (RBAC), хэширование паролей (BCrypt/PBKDF2) и механизм needsPasswordChange (обязательная смена временного пароля при первом входе).
+CORS Policy: Настроена строгая фильтрация доверенных источников (Origins), защищающая API от несанкционированного доступа.
+
+3. SPA (Single Page Application) Architecture
+Фронтенд реализован как SPA, обеспечивая:
+UX: Мгновенную навигацию без перезагрузки страниц (Vue Router).
+Efficiency: Снижение нагрузки на сервер (рендеринг на стороне клиента, сервер отдает только чистый JSON).
+
+4. DevOps & Контейнеризация
+Docker Multi-stage Build: Оптимизация образов через разделение стадий сборки (SDK) и запуска (Runtime).
+CI/CD Ready: Полная готовность к автоматизированному деплою на Render, Azure, Vercel и GitHub Actions.
 
 📊 Сложная бизнес-логика
-Реализован алгоритм расчета остатков ТМЦ в реальном времени:
-Учет первичных поступлений (GoodIncomes) и перемещений между складами (GoodMoves).
-Агрегация данных через Java Streams для высокой производительности.
-Транзакционная целостность при обновлении отчетов (@Transactional).
+Реализован алгоритм расчета остатков ТМЦ в реальном времени, учитывающий:
+Первичные поступления (Incomes) и внутренние перемещения (Moves) между неограниченным количеством складов.
+Транзакционную целостность: база защищена от «битых» ссылок (Foreign Key Constraints) и каскадных ошибок.
 
 🏗 Инструкция по запуску
-☕ Бэкенд (Java / Spring Boot / Maven):
+🐳 Docker (Универсальный):
+bash
+docker build -t sklad-app .
+docker run -p 10000:10000 sklad-app
+Используйте код с осторожностью.
+
+🔷 .NET 10 (C#):
+bash
+cd SkladProject
+dotnet restore
+dotnet run
+Используйте код с осторожностью.
+
+☕ Java 25 (Spring Boot):
 bash
 cd java-api
-./mvnw clean package -DskipTests
-java -jar target/java-api-0.0.1-SNAPSHOT.jar
-Используйте код с осторожностью.
-Адрес API: http://localhost:8000
-Доступ по умолчанию: admin / 123 (автоматическая инициализация при первом старте).
-
-⚡ Фронтенд (npm):
-bash
-cd vue-api-sklad
-npm install
-npm run dev
+./mvnw clean package
+java -jar target/app.jar
 Используйте код с осторожностью.
 
-📈 Перспективы развития
-Контейнеризация всех сервисов через Docker Compose.
-Интеграция со сканерами штрих-кодов через мобильное приложение.
-Расширение ИИ-аналитики для прогнозирования дефицита товаров.
+🔗 Репозитории проекта
+🚀 .NET 10 (C# / EF Core): https://github.com/maxzakprofessor/aspent_api_stock.git
+☕ Java 25 (Spring Boot 3.5): https://github.com/maxzakprofessor/JAVA-API-SKLAD.git
+🐍 Python (Django DRF): https://github.com/maxzakprofessor/drf_api_stock_ai.git
+✨ Frontend (Vue 3 / Vite): https://github.com/maxzakprofessor/vue-api-stock.git
 
 👨‍💻 Разработчик
 Закирьянов М.М.
-Профессиональный Fullstack-разработчик, специализирующийся на миграции корпоративных систем и внедрении стандартов безопасности.
+Fullstack-разработчик и архитектор миграции систем.
+Специализация: создание отказоустойчивых систем с глубокой интеграцией AI-инструментов в процесс разработки.
 
-🚀 Статус проекта
-Проект прошел полное тестирование:
-Авторизация и JWT-защита 🔐
-Расчет складских остатков 📊
-Генерация серверных PDF-отчетов 📄
-Интеграция с AI Gemini 2.0 🤖
+📺 Видео-презентация системы:
+Смотреть демонстрацию Sklad Pro AI (OneDrive) https://1drv.ms/v/c/f07141fbcbb39609/IQCqTOpBmzeSSJnZTzPWCto4AQcHprcYbQz-J_JbNYNCcbk?e=bTkgfr
+
+🌐 Демо-стенды в облаке:
+☁️ Backend API (Render): aspent-api-stock.onrender.com [1]
+☁️ Backend (Pythonanywhere): https://mzakiryanovgmailcom.pythonanywhere.com/admin
+☁️ Frontend (Vercel): https://vue-api-stock.vercel.app/#/ [1]
+
+✅ Статус проекта
+Identity & JWT: 🔐 (Стабильно)
+DB Performance (N+1 Fixed): 🚀 (Оптимизировано)
+Cloud Deployment: ☁️ (Render/Vercel Live)
+AI Analysis: 🤖 (Gemini 2.0 Integrated)
+
