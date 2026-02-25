@@ -140,6 +140,7 @@ Fullstack Developer and System Migration Architect.
 **Закирьянов М.М.**  
 Fullstack-разработчик и архитектор миграции систем.
 
+
 ## 📺 Видео-презентация системы
 [Смотреть демонстрацию Sklad Pro AI (OneDrive)](https://1drv.ms/v/c/f07141fbcbb39609/IQCqTOpBmzeSSJnZTzPWCto4AQcHprcYbQz-J_JbNYNCcbk?e=bTkgfr)
 
